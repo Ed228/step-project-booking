@@ -2,7 +2,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Flight implements StringToDB {
-    private static final int TOTAL_SEAT = 100;
+    public static final int TOTAL_SEAT = 100;
     private int id;
     private Cities from;
     private Cities destination;
@@ -44,6 +44,17 @@ public class Flight implements StringToDB {
     @Override
     public String toStringToDB() {
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "id=" + id +
+                ", from=" + from +
+                ", destination=" + destination +
+                ", departureDate=" + departureDate +
+                ", freeSeat=" + freeSeat +
+                '}';
     }
 
     @Override
