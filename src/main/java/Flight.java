@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Flight implements StringToDB {
     private static final int TOTAL_SEAT = 100;
@@ -43,5 +44,22 @@ public class Flight implements StringToDB {
     @Override
     public String toStringToDB() {
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flight flight = (Flight) o;
+        return id == flight.id &&
+                freeSeat == flight.freeSeat &&
+                from == flight.from &&
+                destination == flight.destination &&
+                Objects.equals(departureDate, flight.departureDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, from, destination, departureDate, freeSeat);
     }
 }
