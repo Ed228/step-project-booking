@@ -16,6 +16,9 @@ public class Flight implements StringToDB {
         this.departureDate = departureDate;
         this.freeSeat = freeSeat;
     }
+    private Flight(){
+
+    }
 
     public static int getTotalSeat() {
         return TOTAL_SEAT;
@@ -41,9 +44,18 @@ public class Flight implements StringToDB {
         return this.freeSeat;
     }
 
+    public static Flight of(String s){
+        String[] data = s.split("\\s+");
+        int id = Integer.parseInt(data[0]);
+
+        return new Flight();
+    }
     @Override
-    public String toStringToDB() {
-        return null;
+    public String toDBSting() {
+        return id + " " + from +
+                " " + destination +
+                " " + departureDate +
+                " " + freeSeat;
     }
 
     @Override

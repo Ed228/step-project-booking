@@ -1,4 +1,6 @@
 import com.sun.istack.internal.NotNull;
+import sun.misc.IOUtils;
+import sun.nio.ch.IOUtil;
 
 import java.io.*;
 import java.util.List;
@@ -26,8 +28,8 @@ public class DBofFile<T extends StringToDB> {
     }
     public void addOne(T t) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-        bw.write(t.toStringToDB());
-        writeLineBreakOrContinue(t.toStringToDB(), bw);
+        bw.write(t.toDBSting());
+        writeLineBreakOrContinue(t.toDBSting(), bw);
         bw.close();
     }
     public void addMany(String ...items) throws IOException {
@@ -46,8 +48,8 @@ public class DBofFile<T extends StringToDB> {
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
         Stream.of(t).forEach(s -> {
             try {
-                bw.write(s.toStringToDB());
-                writeLineBreakOrContinue(s.toStringToDB(), bw);
+                bw.write(s.toDBSting());
+                writeLineBreakOrContinue(s.toDBSting(), bw);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -55,18 +57,28 @@ public class DBofFile<T extends StringToDB> {
         bw.close();
     }
 
-    public void addMany(List<String> list) throws IOException {
+    public void addMany(List<T> list) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(this.file));
         list.forEach(s -> {
             try {
-                bw.write(s);
-                writeLineBreakOrContinue(s, bw);
+                bw.write(s.toDBSting());
+                writeLineBreakOrContinue(s.toDBSting(), bw);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
         bw.close();
     }
+
+//    public boolean updateById(String id, String newItem) throws IOException {
+//        BufferedReader br = new BufferedReader(new FileReader(this.file));
+//        BufferedWriter bw = new BufferedWriter(new FileWriter(this.file));
+//        if(br.lines().anyMatch(s -> s.split("\\s+")[0].equals(id.trim()))){
+//            String s = br.lines().reduce((s1, s2) -> s1 + "\n" + s2).get();
+//            s.replaceFirst()
+//        }
+//
+//    }
 
     public List<String> getAll() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(this.file));

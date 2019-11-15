@@ -1,3 +1,3 @@
 public interface StringToDB {
-    String toStringToDB();
+    String toDBSting();
 }
