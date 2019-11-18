@@ -1,3 +1,5 @@
+package com.eduard;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -5,7 +7,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GeneratorFlightFromCity
+public class GeneratorFlightsFromCity
 {
     private static Cities exceptedCity;
     private static LocalDateTime ldtNow;

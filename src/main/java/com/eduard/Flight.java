@@ -1,3 +1,5 @@
+package com.eduard;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -44,12 +46,18 @@ public class Flight implements StringToDB {
         return this.freeSeat;
     }
 
-    public static Flight of(String s){
-        String[] data = s.split("\\s+");
-        int id = Integer.parseInt(data[0]);
-
-        return new Flight();
+    public void enhanceFreeSeat(int freeSeat) throws FlightException {
+        if((this.freeSeat + freeSeat) > TOTAL_SEAT) {
+            throw new FlightException("free sear is bigger than total seat");
+        }  else this.freeSeat += this.freeSeat + freeSeat;
     }
+
+    public void decreaseFreeSeat(int freeSeat) throws FlightException {
+        if((this.freeSeat - freeSeat) < 0) {
+            throw new FlightException("free seat value must be positive or 0");
+        } else this.freeSeat -= this.freeSeat - freeSeat;
+    }
+
     @Override
     public String toDBSting() {
         return id + " " + from +
@@ -60,7 +68,7 @@ public class Flight implements StringToDB {
 
     @Override
     public String toString() {
-        return "Flight{" +
+        return "com.eduard.Flight{" +
                 "id=" + id +
                 ", from=" + from +
                 ", destination=" + destination +

@@ -1,3 +1,5 @@
+package com.eduard;
+
 public enum Cities {
     KIEV("Kiev"),
     LONDON("London"),
