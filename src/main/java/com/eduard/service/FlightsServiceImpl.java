@@ -26,7 +26,7 @@ public class FlightsServiceImpl implements  FlightsService {
     }
 
     @Override
-    public Flight searchByCityDateFreeSet(Cities city, LocalDateTime departureDate, int freeSet) {
+    public List<Flight> searchByCityDateFreeSet(Cities city, LocalDateTime departureDate, int freeSet) {
         return flightsDAO.searchByCityDateFreeSet(city, departureDate, freeSet);
     }
 

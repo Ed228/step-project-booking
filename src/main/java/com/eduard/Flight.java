@@ -68,7 +68,7 @@ public class Flight implements StringToDB {
 
     @Override
     public String toString() {
-        return "com.eduard.Flight{" +
+        return "Flight{" +
                 "id=" + id +
                 ", from=" + from +
                 ", destination=" + destination +
