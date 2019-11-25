@@ -1,9 +1,11 @@
 package com.eduard;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -70,10 +72,18 @@ public class DBofFile<T extends StringToDB> {
         bw.close();
     }
 
+    private Flight parseAndReturn(String[] strings){
+        return new Flight(Integer.parseInt(strings[0]),
+                Cities.valueOf(strings[1]),
+                Cities.valueOf(strings[2]),
+                LocalDateTime.parse(strings[3]),
+                Integer.parseInt(strings[4])
+                );
+    }
 
-    public List<String> getAll() throws IOException {
+    public List<Flight> getAll() throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(this.file));
-        return br.lines().collect(Collectors.toList());
+        return br.lines().map(s -> parseAndReturn(s.split("\\s+"))).collect(Collectors.toList());
     }
 
 }

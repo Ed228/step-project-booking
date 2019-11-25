@@ -22,10 +22,6 @@ public class Flight implements StringToDB {
 
     }
 
-    public static int getTotalSeat() {
-        return TOTAL_SEAT;
-    }
-
     public int getId() {
         return this.id;
     }
@@ -46,16 +42,16 @@ public class Flight implements StringToDB {
         return this.freeSeat;
     }
 
-    public void enhanceFreeSeat(int freeSeat) throws FlightException {
+    public void incrementFreeSeat(int freeSeat) throws FlightException {
         if((this.freeSeat + freeSeat) > TOTAL_SEAT) {
             throw new FlightException("free sear is bigger than total seat");
-        }  else this.freeSeat += this.freeSeat + freeSeat;
+        }  else this.freeSeat += freeSeat;
     }
 
-    public void decreaseFreeSeat(int freeSeat) throws FlightException {
+    public void decrementFreeSeat(int freeSeat) throws FlightException {
         if((this.freeSeat - freeSeat) < 0) {
             throw new FlightException("free seat value must be positive or 0");
-        } else this.freeSeat -= this.freeSeat - freeSeat;
+        } else this.freeSeat -= freeSeat;
     }
 
     @Override
