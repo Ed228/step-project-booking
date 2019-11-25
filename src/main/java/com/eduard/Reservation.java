@@ -9,23 +9,23 @@ public class Reservation implements StringToDB {
     private long id;
     private String firstNameOwnerReservation;
     private String lastNameOwnerReservation;
-    private Flight flight;
-    private List<Passenger> otherPassengers;
+    private int flightId;
+    private List<Passenger> otherPassengers = new ArrayList<>();
     private int countOfSeats;
 
-    public Reservation(long id, String firstName, String lastName, Flight flight) {
+    public Reservation(long id, String firstName, String lastName, int flightId) {
         this.id = id;
         this.firstNameOwnerReservation = firstName;
         this.lastNameOwnerReservation = lastName;
-        this.flight = flight;
+        this.flightId = flightId;
         this.countOfSeats = 1;
     }
 
-    public Reservation(long id, String firstNameOwnerReservation, String lastNameOwnerReservation, Flight flight, List<Passenger> otherPassengers) {
+    public Reservation(long id, String firstNameOwnerReservation, String lastNameOwnerReservation, int flightId, List<Passenger> otherPassengers) {
         this.id = id;
         this.firstNameOwnerReservation = firstNameOwnerReservation;
         this.lastNameOwnerReservation = lastNameOwnerReservation;
-        this.flight = flight;
+        this.flightId = flightId;
         this.otherPassengers = otherPassengers;
         this.countOfSeats = otherPassengers.size() + 1;
     }
@@ -42,8 +42,8 @@ public class Reservation implements StringToDB {
         return lastNameOwnerReservation;
     }
 
-    public Flight getFlight() {
-        return flight;
+    public int getFlightId() {
+        return flightId;
     }
 
     public int getCountOfSeats() {
@@ -70,12 +70,12 @@ public class Reservation implements StringToDB {
                 countOfSeats == that.countOfSeats &&
                 Objects.equals(firstNameOwnerReservation, that.firstNameOwnerReservation) &&
                 Objects.equals(lastNameOwnerReservation, that.lastNameOwnerReservation) &&
-                Objects.equals(flight, that.flight);
+                Objects.equals(flightId, that.flightId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstNameOwnerReservation, lastNameOwnerReservation, flight, countOfSeats);
+        return Objects.hash(id, firstNameOwnerReservation, lastNameOwnerReservation, flightId, countOfSeats);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class Reservation implements StringToDB {
                 "id=" + id +
                 ", firstNameOwnerReservation='" + firstNameOwnerReservation + '\'' +
                 ", lastNameOwnerReservation='" + lastNameOwnerReservation + '\'' +
-                ", flight=" + flight +
+                ", flightId=" + flightId +
                 ", countOfSeats=" + countOfSeats +
                 '}';
     }
