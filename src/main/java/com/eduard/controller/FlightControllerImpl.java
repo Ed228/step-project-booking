@@ -26,8 +26,8 @@ public class FlightControllerImpl implements FlightController{
     }
 
     @Override
-    public List<Flight> searchByCityDateFreeSet(Cities city, LocalDateTime departureDate, int freeSet) {
-        return flightsService.searchByCityDateFreeSet(city, departureDate, freeSet);
+    public List<Flight> searchByCityDateFreeSet(Cities city, String departureDateString, int freeSet) {
+        return flightsService.searchByCityDateFreeSet(city, departureDateString, freeSet);
     }
 
     @Override

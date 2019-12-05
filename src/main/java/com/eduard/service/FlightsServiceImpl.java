@@ -1,9 +1,8 @@
 package com.eduard.service;
 
 import com.eduard.Cities;
-import com.eduard.dao.FlightsDAO;
 import com.eduard.Flight;
-
+import com.eduard.dao.FlightsDAO;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,8 +25,8 @@ public class FlightsServiceImpl implements  FlightsService {
     }
 
     @Override
-    public List<Flight> searchByCityDateFreeSet(Cities city, LocalDateTime departureDate, int freeSet) {
-        return flightsDAO.searchByCityDateFreeSet(city, departureDate, freeSet);
+    public List<Flight> searchByCityDateFreeSet(Cities city, String departureDateString, int freeSet) {
+        return flightsDAO.searchByCityDateFreeSet(city, departureDateString, freeSet);
     }
 
     @Override
