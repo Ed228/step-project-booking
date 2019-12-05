@@ -29,10 +29,19 @@ public class FlightDaoImpl implements FlightsDAO {
     }
 
     @Override
-    public List<Flight> searchByCityDateFreeSet(Cities city, LocalDateTime departureDate, int freeSet) {
+    public List<Flight> searchByCityDateFreeSet(Cities city, String departureDateString, int freeSet) {
         return this.flights.stream()
-                .anyMatch(f -> f.getDestination().name().equals(city.name()) && f.getDepartureDate().equals(departureDate) && f.getFreeSeat() >= freeSet) ?
-                this.flights.stream().filter(f -> f.getDestination().name().equals(city.name()) && f.getDepartureDate().equals(departureDate) && f.getFreeSeat() == freeSet)
+                .anyMatch(
+                        f -> f.getDestination().name().equals(city.name()) &&
+                        f.getDepartureDate().toString().split("T")[0].equals(departureDateString) &&
+                        f.getFreeSeat() >= freeSet
+                ) ?
+                this.flights.stream()
+                        .filter(
+                                f -> f.getDestination().name().equals(city.name()) &&
+                                        f.getDepartureDate().toString().split("T")[0].equals(departureDateString) &&
+                                        f.getFreeSeat() >= freeSet
+                        )
                 .collect(Collectors.toList()) : null;
     }
 
