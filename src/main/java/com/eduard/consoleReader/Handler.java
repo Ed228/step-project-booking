@@ -25,14 +25,16 @@ public class Handler {
     }
 
     public void getRaceTable() {
-        printList(flightController.getAll());
+        printListFlight(flightController.getAll());
     }
 
     public void getRaceById() {
         System.out.println("Enter the id of the race:");
         try {
             int id = new Scanner(System.in).nextInt();
-            System.out.println(flightController.getById(id));
+            ArrayList<Flight> flightByIdList = new ArrayList<>();
+            flightByIdList.add(flightController.getById(id));
+            printListFlight(flightByIdList);
         } catch (InputMismatchException e) {
             System.out.println("Invalid input id, the id must be integer");
         }
@@ -78,7 +80,7 @@ public class Handler {
                 if (answer.equals("Y")) continue;
                 else break;
             } else {
-                printList(flights);
+                printListFlight(flights);
                 while (true) {
                     System.out.println("To book race, enter the id of the race");
                     int id;
@@ -195,7 +197,7 @@ public class Handler {
                 .get();
     }
 
-    public void printList(List<Flight> flightList) {
+    public void printListFlight(List<Flight> flightList) {
         String separator = "-------------------------------------------------------";
         String header = "ID  | FROM | DESTINATION | DEPARTURE DATE   | FREE SEAT\n" + separator;
         System.out.println(header);
@@ -203,7 +205,7 @@ public class Handler {
             @Override
             public void accept(Flight f) {
                 System.out.printf("%s| %s | %s | %s | %s\n",
-                        f.getId() + generateSpaces(4 - String.valueOf(f.getId()).length()),
+                        f.getId() + generateSpaces(4 - getNumericalRank(f.getId())),
                         f.getFrom().getCity(),
                         f.getDestination().getCity() + generateSpaces(11- f.getDestination().getCity().length()),
                         f.getDepartureDate().toString(),
@@ -214,7 +216,7 @@ public class Handler {
         });
     }
 
-    public void printLst(List<Reservation> reservationList) {
+    public void printListReservation(List<Reservation> reservationList) {
         int firstNameMaxLength = reservationList.stream()
                 .map(r -> r.getFirstNameOwnerReservation().length())
                 .max(Integer::compareTo)
@@ -224,29 +226,32 @@ public class Handler {
                 .max(Integer::compareTo)
                 .get();
 
+        int numberSpacesHeaderFN = 10 - firstNameMaxLength;
+        int numberSpacesHeaderLN = 9 - lastNameMaxLength;
         String header = String.format("BOOK ID | FIRST NAME%s | LAST NAME%s | RACE ID | NUMBER OF SEATS",
-                firstNameMaxLength > 10 ?  generateSpaces(firstNameMaxLength ) : "",
-                lastNameMaxLength > 9 ? generateSpaces(lastNameMaxLength) : ""
+                firstNameMaxLength > 10 ?  generateSpaces(numberSpacesHeaderFN ) : "",
+                lastNameMaxLength > 9 ? generateSpaces(numberSpacesHeaderLN) : ""
         );
         String separator = Stream.generate(() -> "-").limit(header.length()).reduce((s1, s2) -> s1 + s2).get();
+        reservationList.forEach(new Consumer<Reservation>() {
+            @Override
+            public void accept(Reservation r) {
+                System.out.printf("%s | %s | %s | %s | %s",
+                        r.getId() + generateSpaces(7 - getNumericalRank(r.getId())),
+                        r.getFirstNameOwnerReservation() + generateSpaces(10 - r.getFirstNameOwnerReservation().length() + numberSpacesHeaderFN),
+                        r.getLastNameOwnerReservation() + generateSpaces(9 - r.getLastNameOwnerReservation().length() + numberSpacesHeaderLN),
+                        r.getId() + generateSpaces(7 - getNumericalRank(r.getId())),
 
+                        );
+            }
+        });
 
     }
 
-
-    public static void main(String[] args) throws IOException {
-        DBofFile<Flight> db = new DBofFile<>("DataBase");
-        List<Flight> flights = db.getAll();
-        /*------------------------------------------------------------------------*/
-        FlightDaoImpl flightDao = new FlightDaoImpl(flights);
-        FlightsServiceImpl flightsService = new FlightsServiceImpl(flightDao);
-        FlightControllerImpl flightController = new FlightControllerImpl(flightsService);
-        ReservationDAOImpl reservationDAO = new ReservationDAOImpl();
-        ReservationServiceImpl reservationService = new ReservationServiceImpl(flightController, reservationDAO);
-        ReservationControllerImpl reservationController = new ReservationControllerImpl(reservationService);
-        /*------------------------------------------------------------------------*/
-        Handler handler = new Handler(flightController, reservationController);
-        handler.printList(flights);
+    private int getNumericalRank(long number) {
+        if (number < 10) return 1;
+        else return 1 + getNumericalRank(number / 10);
     }
+
 
 }
