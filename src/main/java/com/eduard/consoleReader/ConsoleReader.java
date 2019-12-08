@@ -1,6 +1,8 @@
 package com.eduard.consoleReader;
 
 import com.eduard.Commands;
+import com.eduard.DBofFile;
+import com.eduard.Flight;
 import com.eduard.FlightException;
 import com.eduard.controller.FlightController;
 import com.eduard.controller.ReservationController;
@@ -11,6 +13,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class ConsoleReader {
+    private DBofFile<Flight> db;
     private Handler handler;
     private HashMap<Commands, ActionHandler> commandsAction = new HashMap<>();
     private final String MENU =
@@ -22,7 +25,7 @@ public class ConsoleReader {
             "0. Exit\n";
 
 
-    public ConsoleReader(FlightController flightController, ReservationController reservationController) {
+    public ConsoleReader(FlightController flightController, ReservationController reservationController, DBofFile db) {
         this.handler = new Handler(flightController, reservationController);
     }
 
@@ -45,7 +48,9 @@ public class ConsoleReader {
                     .filter(c -> c.getValue().equals(commandInput))
                     .findFirst();
             if (command.isPresent()){
-                if (command.get().equals(Commands.EXIT)) break;
+                if (command.get().equals(Commands.EXIT)) {
+                    break;
+                }
                 commandsAction.get(command.get()).doAction(this.handler);
             } else try {
                 throw new ConsoleReaderException("Invalid command, try again");

@@ -14,8 +14,9 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException, FlightException {
-        DBofFile<Flight> db = new DBofFile<>("DataBase");
-        List<Flight> flights = db.getAll();
+        DBofFile<Flight> dbFlights = new DBofFile<>("DataBaseRaces");
+        DBofFile<Reservation> dbReservations = new DBofFile<>("DataBaseBooking");
+        List<Flight> flights = dbFlights.getAll();
         /*------------------------------------------------------------------------*/
         FlightDaoImpl flightDao = new FlightDaoImpl(flights);
         FlightsServiceImpl flightsService = new FlightsServiceImpl(flightDao);
@@ -24,7 +25,7 @@ public class Main {
         ReservationServiceImpl reservationService = new ReservationServiceImpl(flightController, reservationDAO);
         ReservationControllerImpl reservationController = new ReservationControllerImpl(reservationService);
         /*------------------------------------------------------------------------*/
-        ConsoleReader consoleReader = new ConsoleReader(flightController, reservationController);
+        ConsoleReader consoleReader = new ConsoleReader(flightController, reservationController, dbFlights);
         consoleReader.init();
         consoleReader.run();
     }

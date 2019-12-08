@@ -106,6 +106,102 @@ public class Handler {
         }
     }
 
+    public void cancelReserve() throws FlightException {
+        while (true) {
+            System.out.println("Enter the id of booking, for cancel him:");
+            long id = -1;
+            try {
+                id = new Scanner(System.in).nextLong();
+            } catch (InputMismatchException e) {
+                System.err.println(e.getMessage());
+                System.out.println("Do you want try again? Y or any key for exit");
+                String answer = new Scanner(System.in).next();
+                if (answer.equals("Y")) continue;
+                else break;
+            }
+            if (reservationController.removeReservation(id)) System.out.println("reservation removed successful");
+            else System.out.println("No races found by this id");
+            break;
+        }
+    }
+
+    public void printMyRacesByInitials() {
+        String firstName;
+        String lastName;
+        while (true) {
+            firstName = new Scanner(System.in).next();
+            if (isNotAlphabeticString(firstName)) {
+                System.out.println("Name must only contains of letters");
+                continue;
+            }
+            lastName = new Scanner(System.in).next();
+            if (isNotAlphabeticString(lastName)) {
+                System.out.println("Name must only contains of letters");
+                continue;
+            }
+
+            if (reservationController.getReservationsByFirstAndLastName(firstName, lastName).size() == 0)
+                printListReservation(reservationController.getReservationsByFirstAndLastName(firstName, lastName));
+            else System.out.println("No bookings found by this id");
+
+            break;
+        }
+    }
+
+    public void printListFlight(List<Flight> flightList) {
+        String separator = "-------------------------------------------------------";
+        String header = "ID  | FROM | DESTINATION | DEPARTURE DATE   | FREE SEAT\n" + separator;
+        System.out.println(header);
+        flightList.forEach(new Consumer<Flight>() {
+            @Override
+            public void accept(Flight f) {
+                System.out.printf("%s| %s | %s | %s | %s\n",
+                        f.getId() + generateSpaces(4 - getNumericalRank(f.getId())),
+                        f.getFrom().getCity(),
+                        f.getDestination().getCity() + generateSpaces(11- f.getDestination().getCity().length()),
+                        f.getDepartureDate().toString(),
+                        f.getFreeSeat()
+                );
+                System.out.println(separator);
+            }
+        });
+    }
+
+    public void printListReservation(List<Reservation> reservationList) {
+        int firstNameMaxLength = reservationList.stream()
+                .map(r -> r.getFirstNameOwnerReservation().length())
+                .max(Integer::compareTo)
+                .get();
+        int lastNameMaxLength = reservationList.stream()
+                .map(r -> r.getLastNameOwnerReservation().length())
+                .max(Integer::compareTo)
+                .get();
+
+        int numberSpacesHeaderFN = Math.max(firstNameMaxLength - 10, 0);
+        int numberSpacesHeaderLN = Math.max(lastNameMaxLength - 9, 0);
+        String header = String.format("BOOK ID | FIRST NAME%s | LAST NAME%s | RACE ID | NUMBER OF SEATS",
+                generateSpaces(numberSpacesHeaderFN ),
+                generateSpaces(numberSpacesHeaderLN)
+        );
+        String separator = Stream.generate(() -> "-").limit(header.length()).reduce((s1, s2) -> s1 + s2).get();
+        System.out.println(header);
+        System.out.println(separator);
+        reservationList.forEach(new Consumer<Reservation>() {
+            @Override
+            public void accept(Reservation r) {
+                System.out.printf("%s | %s | %s | %s | %s\n",
+                        r.getId() + generateSpaces(7 - getNumericalRank(r.getId())),
+                        r.getFirstNameOwnerReservation() + generateSpaces ((numberSpacesHeaderFN + 10) - r.getFirstNameOwnerReservation().length()),
+                        r.getLastNameOwnerReservation() + generateSpaces( (numberSpacesHeaderLN + 9) - r.getLastNameOwnerReservation().length()),
+                        r.getFlightId() + generateSpaces(7 - getNumericalRank(r.getFlightId())),
+                        r.getCountOfSeats() + generateSpaces(15 - getNumericalRank(r.getCountOfSeats()))
+                        );
+                System.out.println(separator);
+            }
+        });
+
+    }
+
     private Reservation createReservation(int countFreeSeat, long idReservation) {
         String firstName;
         String lastName;
@@ -149,109 +245,17 @@ public class Handler {
         return false;
     }
 
-    public void cancelReserve() throws FlightException {
-        while (true) {
-            System.out.println("Enter the id of booking, for cancel him:");
-            long id = -1;
-            try {
-                id = new Scanner(System.in).nextLong();
-            } catch (InputMismatchException e) {
-                System.err.println(e.getMessage());
-                System.out.println("Do you want try again? Y or any key for exit");
-                String answer = new Scanner(System.in).next();
-                if (answer.equals("Y")) continue;
-                else break;
-            }
-            if (reservationController.removeReservation(id)) System.out.println("reservation removed successful");
-            else System.out.println("No races found by this id");
-            break;
-        }
-    }
-
-    public void printMyRacesByInitials() {
-        String firstName;
-        String lastName;
-        while (true) {
-            firstName = new Scanner(System.in).next();
-            if (isNotAlphabeticString(firstName)) {
-                System.out.println("Name must only contains of letters");
-                continue;
-            }
-            lastName = new Scanner(System.in).next();
-            if (isNotAlphabeticString(lastName)) {
-                System.out.println("Name must only contains of letters");
-                continue;
-            }
-            System.out.println(
-                    reservationController.getReservationsByFirstAndLastName(firstName, lastName).size() == 0 ?
-                    reservationController.getReservationsByFirstAndLastName(firstName, lastName) : "No bookings found by this id"
-            );
-            break;
-        }
-    }
-
     private String generateSpaces(long count){
+        if (count <= 0) return "";
         return Stream.generate(() -> " ")
                 .limit(count)
                 .reduce((s1, s2) -> s1 + s2)
                 .get();
     }
 
-    public void printListFlight(List<Flight> flightList) {
-        String separator = "-------------------------------------------------------";
-        String header = "ID  | FROM | DESTINATION | DEPARTURE DATE   | FREE SEAT\n" + separator;
-        System.out.println(header);
-        flightList.forEach(new Consumer<Flight>() {
-            @Override
-            public void accept(Flight f) {
-                System.out.printf("%s| %s | %s | %s | %s\n",
-                        f.getId() + generateSpaces(4 - getNumericalRank(f.getId())),
-                        f.getFrom().getCity(),
-                        f.getDestination().getCity() + generateSpaces(11- f.getDestination().getCity().length()),
-                        f.getDepartureDate().toString(),
-                        f.getFreeSeat()
-                );
-                System.out.println(separator);
-            }
-        });
-    }
-
-    public void printListReservation(List<Reservation> reservationList) {
-        int firstNameMaxLength = reservationList.stream()
-                .map(r -> r.getFirstNameOwnerReservation().length())
-                .max(Integer::compareTo)
-                .get();
-        int lastNameMaxLength = reservationList.stream()
-                .map(r -> r.getLastNameOwnerReservation().length())
-                .max(Integer::compareTo)
-                .get();
-
-        int numberSpacesHeaderFN = 10 - firstNameMaxLength;
-        int numberSpacesHeaderLN = 9 - lastNameMaxLength;
-        String header = String.format("BOOK ID | FIRST NAME%s | LAST NAME%s | RACE ID | NUMBER OF SEATS",
-                firstNameMaxLength > 10 ?  generateSpaces(numberSpacesHeaderFN ) : "",
-                lastNameMaxLength > 9 ? generateSpaces(numberSpacesHeaderLN) : ""
-        );
-        String separator = Stream.generate(() -> "-").limit(header.length()).reduce((s1, s2) -> s1 + s2).get();
-        reservationList.forEach(new Consumer<Reservation>() {
-            @Override
-            public void accept(Reservation r) {
-                System.out.printf("%s | %s | %s | %s | %s",
-                        r.getId() + generateSpaces(7 - getNumericalRank(r.getId())),
-                        r.getFirstNameOwnerReservation() + generateSpaces(10 - r.getFirstNameOwnerReservation().length() + numberSpacesHeaderFN),
-                        r.getLastNameOwnerReservation() + generateSpaces(9 - r.getLastNameOwnerReservation().length() + numberSpacesHeaderLN),
-                        r.getId() + generateSpaces(7 - getNumericalRank(r.getId())),
-
-                        );
-            }
-        });
-
-    }
-
-    private int getNumericalRank(long number) {
+    private  int getNumericalRank(long number) {
         if (number < 10) return 1;
         else return 1 + getNumericalRank(number / 10);
     }
-
 
 }
