@@ -1,11 +1,15 @@
 package com.eduard;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class Reservation implements StringToDB {
+public class Reservation implements StringToDB, OfDBString<Reservation> {
     private long id;
     private String firstNameOwnerReservation;
     private String lastNameOwnerReservation;
@@ -29,6 +33,8 @@ public class Reservation implements StringToDB {
         this.otherPassengers = otherPassengers;
         this.countOfSeats = otherPassengers.size() + 1;
     }
+
+    public Reservation() {}
 
     public long getId() {
         return id;
@@ -91,7 +97,32 @@ public class Reservation implements StringToDB {
 
     @Override
     public String toDBSting() {
-        return null;
+        final StringBuilder sb = new StringBuilder();
+        return sb.append(this.id).append(" ")
+        .append(this.firstNameOwnerReservation).append(" ")
+        .append(this.lastNameOwnerReservation).append(" ")
+        .append(this.flightId).append(" ")
+        .append(this.otherPassengers.stream()
+                .map(p -> String.format("%s,%s", p.getFirstName(), p.getLastName()))
+                .reduce((s1, s2) -> s1 + ";" + s2).get())
+                .append(" ")
+        .append(this.countOfSeats).toString();
     }
 
+    @Override
+    public Reservation ofDBString(String s) {
+        String[] args = s.split("\\s+");
+        return new Reservation(
+                Long.parseLong(args[0]),
+                args[1],
+                args[2],
+                Integer.parseInt(args[3]),
+                Arrays.stream(args[4].split(";"))
+                        .map(s1 -> {
+                    String[] initials = s1.split(",");
+                    return new Passenger(initials[0], initials[1]);
+                })
+                .collect(Collectors.toList())
+        );
+    }
 }

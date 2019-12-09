@@ -1,5 +1,8 @@
-package com.eduard;
+package com.eduard.dataBase;
 
+import com.eduard.Cities;
+import com.eduard.Flight;
+import com.eduard.StringToDB;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;

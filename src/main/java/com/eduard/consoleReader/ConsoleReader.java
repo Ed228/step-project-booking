@@ -1,11 +1,9 @@
 package com.eduard.consoleReader;
 
-import com.eduard.Commands;
-import com.eduard.DBofFile;
-import com.eduard.Flight;
-import com.eduard.FlightException;
+import com.eduard.*;
 import com.eduard.controller.FlightController;
 import com.eduard.controller.ReservationController;
+import com.eduard.dataBase.DBofFile;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,7 +11,8 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class ConsoleReader {
-    private DBofFile<Flight> db;
+    private DBofFile<Flight> dbFlight;
+    private DBofFile<Reservation> dbReservation;
     private Handler handler;
     private HashMap<Commands, ActionHandler> commandsAction = new HashMap<>();
     private final String MENU =
@@ -25,8 +24,11 @@ public class ConsoleReader {
             "0. Exit\n";
 
 
-    public ConsoleReader(FlightController flightController, ReservationController reservationController, DBofFile db) {
+    public ConsoleReader(FlightController flightController, ReservationController reservationController,
+                         DBofFile<Flight> dbFlight, DBofFile<Reservation> dbReservation) {
         this.handler = new Handler(flightController, reservationController);
+        this.dbFlight = dbFlight;
+        this.dbReservation = dbReservation;
     }
 
     public void init(){

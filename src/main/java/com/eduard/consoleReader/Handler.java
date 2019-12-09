@@ -92,7 +92,7 @@ public class Handler {
                     }
                     if (flights.stream().anyMatch(f -> f.getId() == id)) {
                         long idReservation = this.reservationController.getAll().size();
-                        Reservation reservation = createReservation(freeSeat, idReservation);
+                        Reservation reservation = createReservation(freeSeat, idReservation, id);
                         try {
                             this.reservationController.addReservation(reservation);
                         } catch (FlightException e) {
@@ -148,7 +148,7 @@ public class Handler {
         }
     }
 
-    public void printListFlight(List<Flight> flightList) {
+    private void printListFlight(List<Flight> flightList) {
         String separator = "-------------------------------------------------------";
         String header = "ID  | FROM | DESTINATION | DEPARTURE DATE   | FREE SEAT\n" + separator;
         System.out.println(header);
@@ -167,7 +167,7 @@ public class Handler {
         });
     }
 
-    public void printListReservation(List<Reservation> reservationList) {
+    private void printListReservation(List<Reservation> reservationList) {
         int firstNameMaxLength = reservationList.stream()
                 .map(r -> r.getFirstNameOwnerReservation().length())
                 .max(Integer::compareTo)
@@ -202,7 +202,7 @@ public class Handler {
 
     }
 
-    private Reservation createReservation(int countFreeSeat, long idReservation) {
+    private Reservation createReservation(int countFreeSeat, long idReservation, int idFlight) {
         String firstName;
         String lastName;
         ArrayList<Passenger> passengers = new ArrayList<>();
@@ -234,7 +234,7 @@ public class Handler {
             }
             break;
         }
-        return new Reservation(idReservation, firstName, lastName, countFreeSeat, passengers);
+        return new Reservation(idReservation, firstName, lastName, idFlight, passengers);
     }
 
     private boolean isNotAlphabeticString(String s) {
