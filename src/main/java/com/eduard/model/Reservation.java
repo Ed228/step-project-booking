@@ -1,12 +1,9 @@
-package com.eduard;
+package com.eduard.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Reservation implements StringToDB, OfDBString<Reservation> {
@@ -17,21 +14,13 @@ public class Reservation implements StringToDB, OfDBString<Reservation> {
     private List<Passenger> otherPassengers = new ArrayList<>();
     private int countOfSeats;
 
-    public Reservation(long id, String firstName, String lastName, int flightId) {
-        this.id = id;
-        this.firstNameOwnerReservation = firstName;
-        this.lastNameOwnerReservation = lastName;
-        this.flightId = flightId;
-        this.countOfSeats = 1;
-    }
-
     public Reservation(long id, String firstNameOwnerReservation, String lastNameOwnerReservation, int flightId, List<Passenger> otherPassengers) {
         this.id = id;
         this.firstNameOwnerReservation = firstNameOwnerReservation;
         this.lastNameOwnerReservation = lastNameOwnerReservation;
         this.flightId = flightId;
         this.otherPassengers = otherPassengers;
-        this.countOfSeats = otherPassengers.size() + 1;
+        this.countOfSeats = otherPassengers.size();
     }
 
     public Reservation() {}
@@ -62,7 +51,7 @@ public class Reservation implements StringToDB, OfDBString<Reservation> {
 
     public static List<Reservation> getReservesByFirstAndLastName(String firstName, String lastName, List<Reservation> AllReserves){
         return AllReserves.stream()
-                .filter(r -> r.firstNameOwnerReservation.equals(firstName) && r.firstNameOwnerReservation.equals(lastName)
+                .filter(r -> r.firstNameOwnerReservation.equals(firstName) && r.lastNameOwnerReservation.equals(lastName)
                         || r.otherPassengers.stream().anyMatch(p -> p.getFirstName().equals(firstName) && p.getLastName().equals(lastName)))
                 .collect(Collectors.toList());
     }

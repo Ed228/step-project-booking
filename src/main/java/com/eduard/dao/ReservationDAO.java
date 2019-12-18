@@ -1,6 +1,6 @@
 package com.eduard.dao;
 
-import com.eduard.Reservation;
+import com.eduard.model.Reservation;
 
 import java.util.List;
 

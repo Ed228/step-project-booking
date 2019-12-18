@@ -1,16 +1,11 @@
 package com.eduard.consoleReader;
 
-import com.eduard.*;
 import com.eduard.controller.FlightController;
-import com.eduard.controller.FlightControllerImpl;
 import com.eduard.controller.ReservationController;
-import com.eduard.controller.ReservationControllerImpl;
-import com.eduard.dao.FlightDaoImpl;
-import com.eduard.dao.ReservationDAOImpl;
-import com.eduard.service.FlightsServiceImpl;
-import com.eduard.service.ReservationServiceImpl;
+import com.eduard.model.*;
 
-import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
@@ -45,20 +40,20 @@ public class Handler {
             System.out.println("Enter destination:");
             String destination = new Scanner(System.in).next();
             if (Stream.of(Cities.values()).map(Cities::getCity).noneMatch(c -> c.equalsIgnoreCase(destination))) {
-                System.out.println("Entered destination city is absent, do you want try again? Y/N");
+                System.out.println("Entered destination city is absent, do you want try again? Y / any key to break");
                 String answer = new Scanner(System.in).next();
-                if (answer.toLowerCase().equals("N")) break;
-                else continue;
+                if (answer.toLowerCase().equals("y")) continue;
+                else break;
             }
             System.out.println("Enter departure date in format \"yyyy-dd-mm\"(for example:\"2019-11-18\"):");
             String departureDateString = new Scanner(System.in).next();
 
             if (!departureDateString.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")){
                 System.err.println("Invalid date format, date format must be a \"yyyy-dd-mm\"");
-                System.out.println("Do you want try again? Y/N");
+                System.out.println("Do you want try again? Y / any key to break");
                 String answer = new Scanner(System.in).next();
-                if (answer.toLowerCase().equals("N")) break;
-                else continue;
+                if (answer.toLowerCase().equals("y")) continue;
+                else break;
             }
             System.out.println("Enter a number of free seat:");
             int freeSeat = 0;
@@ -67,7 +62,13 @@ public class Handler {
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input id, the id must be integer");
             }
-
+            if (freeSeat < 1) {
+                System.out.println("Free seat must be equals or bigger that 1");
+                System.out.println("Do you want try again? Y / any key to break");
+                String answer = new Scanner(System.in).next();
+                if (answer.toLowerCase().equals("y")) continue;
+                else break;
+            }
             List<Flight> flights = flightController.searchByCityDateFreeSet(
                     Cities.valueOf(destination.toUpperCase()),
                     departureDateString,
@@ -75,9 +76,9 @@ public class Handler {
             );
 
             if (flights.size() == 0) {
-                System.out.println("No races founds by entered parameters, do you want enter again? Y/N");
+                System.out.println("No races founds by entered parameters, do you want enter again? Y / any key to break");
                 String answer = new Scanner(System.in).next();
-                if (answer.equals("Y")) continue;
+                if (answer.toLowerCase().equals("y")) continue;
                 else break;
             } else {
                 printListFlight(flights);
@@ -106,6 +107,7 @@ public class Handler {
         }
     }
 
+
     public void cancelReserve() throws FlightException {
         while (true) {
             System.out.println("Enter the id of booking, for cancel him:");
@@ -129,18 +131,20 @@ public class Handler {
         String firstName;
         String lastName;
         while (true) {
+            System.out.println("Enter the first name:");
             firstName = new Scanner(System.in).next();
             if (isNotAlphabeticString(firstName)) {
                 System.out.println("Name must only contains of letters");
                 continue;
             }
+            System.out.println("Enter the last name:");
             lastName = new Scanner(System.in).next();
             if (isNotAlphabeticString(lastName)) {
                 System.out.println("Name must only contains of letters");
                 continue;
             }
 
-            if (reservationController.getReservationsByFirstAndLastName(firstName, lastName).size() == 0)
+            if (reservationController.getReservationsByFirstAndLastName(firstName, lastName).size() != 0)
                 printListReservation(reservationController.getReservationsByFirstAndLastName(firstName, lastName));
             else System.out.println("No bookings found by this id");
 
@@ -149,10 +153,19 @@ public class Handler {
     }
 
     private void printListFlight(List<Flight> flightList) {
+        List<Flight> flightListSorted = new ArrayList<>(flightList) ;
+        flightListSorted.sort(new Comparator<Flight>() {
+            @Override
+            public int compare(Flight o1, Flight o2) {
+                ZonedDateTime zdt1 = o1.getDepartureDate().atZone(ZoneId.of("UTC+2"));
+                ZonedDateTime zdt2 = o2.getDepartureDate().atZone(ZoneId.of("UTC+2"));
+                return Long.valueOf(zdt1.toInstant().getEpochSecond() - zdt2.toInstant().getEpochSecond()).intValue();
+            }
+        });
         String separator = "-------------------------------------------------------";
         String header = "ID  | FROM | DESTINATION | DEPARTURE DATE   | FREE SEAT\n" + separator;
         System.out.println(header);
-        flightList.forEach(new Consumer<Flight>() {
+        flightListSorted.forEach(new Consumer<Flight>() {
             @Override
             public void accept(Flight f) {
                 System.out.printf("%s| %s | %s | %s | %s\n",

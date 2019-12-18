@@ -1,7 +1,7 @@
 package com.eduard.service;
 
-import com.eduard.FlightException;
-import com.eduard.Reservation;
+import com.eduard.model.FlightException;
+import com.eduard.model.Reservation;
 
 import java.util.List;
 

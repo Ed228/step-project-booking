@@ -1,9 +1,8 @@
 package com.eduard.service;
 
-import com.eduard.Cities;
-import com.eduard.Flight;
+import com.eduard.model.Cities;
+import com.eduard.model.Flight;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface FlightsService {

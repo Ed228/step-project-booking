@@ -1,4 +1,4 @@
-package com.eduard;
+package com.eduard.consoleReader;
 
 public enum Commands {
     RACES_TABLE("1"),
