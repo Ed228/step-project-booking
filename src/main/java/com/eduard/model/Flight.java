@@ -1,9 +1,9 @@
-package com.eduard;
+package com.eduard.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Flight implements StringToDB {
+public class Flight implements StringToDB, OfDBString<Flight> {
     public static final int TOTAL_SEAT = 100;
     private int id;
     private Cities from;
@@ -18,8 +18,7 @@ public class Flight implements StringToDB {
         this.departureDate = departureDate;
         this.freeSeat = freeSeat;
     }
-    private Flight(){
-
+    public Flight(){
     }
 
     public int getId() {
@@ -88,5 +87,16 @@ public class Flight implements StringToDB {
     @Override
     public int hashCode() {
         return Objects.hash(id, from, destination, departureDate, freeSeat);
+    }
+
+    @Override
+    public Flight ofDBString(String s) {
+        String[] strings = s.split(" ");
+        return new Flight(Integer.parseInt(strings[0]),
+                Cities.valueOf(strings[1]),
+                Cities.valueOf(strings[2]),
+                LocalDateTime.parse(strings[3]),
+                Integer.parseInt(strings[4])
+        );
     }
 }

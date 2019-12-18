@@ -1,4 +1,4 @@
-package com.eduard;
+package com.eduard.model;
 
 import java.util.Objects;
 

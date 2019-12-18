@@ -1,4 +1,4 @@
-package com.eduard;
+package com.eduard.model;
 
 public enum Cities {
     KIEV("Kiev"),
@@ -8,7 +8,13 @@ public enum Cities {
     PARIS("Paris"),
     MADRID("Madrid"),
     DONETSK("Donetsk"),
-    SHEPETOVKA("Shepetovka");
+    SHEPETOVKA("Shepetovka"),
+    TOKYO("Tokyo"),
+    HONG_KONG("Hong Kong"),
+    OTTAWA("Ottawa"),
+    MUMBAI("Mumbai"),
+    GLASGOW("Glasgow"),
+    WASHINGTON("Washington");
 
     private final String city;
 

@@ -1,6 +1,6 @@
 package com.eduard.dao;
 
-import com.eduard.Reservation;
+import com.eduard.model.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,9 @@ public class ReservationDAOImpl implements ReservationDAO {
 
     private List<Reservation> reservations = new ArrayList<>();
 
+    public ReservationDAOImpl(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
 
     @Override
     public void addReservation(Reservation reservation) {
