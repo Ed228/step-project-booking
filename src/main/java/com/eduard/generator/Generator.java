@@ -20,7 +20,7 @@ public class Generator {
         );
         System.out.println(nowDateTime);
         System.out.println(nowDateTimePer24Hours);
-        for (int i = 0; i < 13; i++) {
+        for (int i = 0; i < 20; i++) {
             LocalDateTime incrementDate = LocalDateTime.of(nowDateTime.getYear(), nowDateTime.getMonth(), nowDateTime.getDayOfMonth() + k++, nowDateTime.getHour(), nowDateTime.getMinute());
             flights.addAll(GeneratorFlightsFromCity.generate(Cities.KIEV, 40, j, incrementDate));
             j = j + 40;

@@ -9,18 +9,18 @@ import java.util.List;
 
 public class ReservationServiceImpl implements ReservationService {
 
-    private FlightController flightController;
+    private FlightsService flightService;
     private ReservationDAO reservationDAO;
 
-    public ReservationServiceImpl(FlightController flightController, ReservationDAO reservationDAO) {
-        this.flightController = flightController;
+    public ReservationServiceImpl(FlightsService flightsService, ReservationDAO reservationDAO) {
+        this.flightService = flightsService;
         this.reservationDAO = reservationDAO;
     }
 
     @Override
     public void addReservation(Reservation reservation) throws FlightException {
         reservationDAO.addReservation(reservation);
-        flightController.getById(reservation.getFlightId()).decrementFreeSeat(reservation.getCountOfSeats());
+        flightService.getById(reservation.getFlightId()).decrementFreeSeat(reservation.getCountOfSeats());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservationById = this.getReservationById(id);
         if(reservationById != null) {
             this.reservationDAO.removeReservation(id);
-            this.flightController
+            this.flightService
                     .getById(reservationById.getFlightId())
                     .incrementFreeSeat((reservationById.getCountOfSeats()));
             return true;

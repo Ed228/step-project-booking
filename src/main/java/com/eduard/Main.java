@@ -27,13 +27,11 @@ public class Main {
         FlightsServiceImpl flightsService = new FlightsServiceImpl(flightDao);
         FlightControllerImpl flightController = new FlightControllerImpl(flightsService);
         ReservationDAOImpl reservationDAO = new ReservationDAOImpl(reservations);
-        ReservationServiceImpl reservationService = new ReservationServiceImpl(flightController, reservationDAO);
+        ReservationServiceImpl reservationService = new ReservationServiceImpl(flightsService, reservationDAO);
         ReservationControllerImpl reservationController = new ReservationControllerImpl(reservationService);
         /*------------------------------------------------------------------------*/
         ConsoleReader consoleReader = new ConsoleReader(flightController, reservationController, dbFlights, dbReservations);
         consoleReader.init();
         consoleReader.run();
     }
-
-
 }
